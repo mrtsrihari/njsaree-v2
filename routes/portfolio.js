@@ -1,0 +1,125 @@
+const express = require('express');
+const router = express.Router();
+const cloudinary = require('cloudinary');
+const multer = require('multer');
+const { insertPortfolioImage, getAllPortfolioImages, deletePortfolioImage, getPortfolioImageById } = require('../db/database');
+
+// Config from env
+const cName = process.env.CLOUDINARY_CLOUD_NAME;
+const cKey = process.env.CLOUDINARY_API_KEY;
+const cSecret = process.env.CLOUDINARY_API_SECRET;
+
+const hasCloudinary = cName && cKey && cSecret && 
+                      !cName.includes('your_') && 
+                      !cKey.includes('your_') && 
+                      !cSecret.includes('your_');
+
+let upload;
+if (hasCloudinary) {
+    const CloudinaryStorage = require('multer-storage-cloudinary');
+    cloudinary.v2.config({
+        cloud_name: cName,
+        api_key: cKey,
+        api_secret: cSecret,
+    });
+    const storage = new CloudinaryStorage({
+        cloudinary,
+        params: {
+            folder: 'nj-bridal-portfolio',
+            allowed_formats: ['jpg', 'jpeg', 'png', 'webp'],
+            transformation: [{ width: 1200, crop: 'limit', quality: 'auto' }],
+        },
+    });
+    upload = multer({ storage, limits: { fileSize: 10 * 1024 * 1024 } });
+} else {
+    // Fallback: store in memory (local disk in /tmp)
+    const path = require('path');
+    const os = require('os');
+    const localDiskStorage = multer.diskStorage({
+        destination: (req, file, cb) => cb(null, os.tmpdir()),
+        filename: (req, file, cb) => cb(null, Date.now() + path.extname(file.originalname)),
+    });
+    upload = multer({ storage: localDiskStorage, limits: { fileSize: 10 * 1024 * 1024 } });
+    console.warn('⚠️  Cloudinary not configured — uploads will be stored temporarily in /tmp');
+}
+
+// Token auth middleware (reuses logic from admin route)
+function tokenAuth(req, res, next) {
+    const authHeader = req.headers.authorization;
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        return res.status(401).json({ success: false, error: 'Authentication required' });
+    }
+    // We import activeTokens from admin module
+    const adminModule = require('./admin');
+    if (adminModule.isValidToken(authHeader.split(' ')[1])) {
+        next();
+    } else {
+        return res.status(401).json({ success: false, error: 'Invalid or expired token' });
+    }
+}
+
+// GET portfolio images (public - no auth needed)
+// Option ?category=bridal-saree
+router.get('/', (req, res) => {
+    try {
+        const category = req.query.category;
+        const images = getAllPortfolioImages(category);
+        res.json({ success: true, images });
+    } catch (err) {
+        res.status(500).json({ success: false, error: 'Failed to fetch images' });
+    }
+});
+
+// POST upload image (admin only)
+router.post('/upload', tokenAuth, upload.single('image'), async (req, res) => {
+    try {
+        if (!req.file) {
+            return res.status(400).json({ success: false, error: 'No file uploaded' });
+        }
+
+        let imageUrl, publicId;
+        if (hasCloudinary) {
+            imageUrl = req.file.secure_url || req.file.url || req.file.path;
+            publicId = req.file.public_id || req.file.filename;
+        } else {
+            imageUrl = `/local-tmp/${req.file.filename}`;
+            publicId = req.file.filename;
+        }
+
+        const caption = req.body.caption || '';
+        const category = req.body.category || 'bridal-saree';
+        
+        insertPortfolioImage(imageUrl, publicId, caption, category);
+        res.json({ success: true, message: 'Image uploaded', url: imageUrl });
+    } catch (err) {
+        console.error('Upload error:', err);
+        res.status(500).json({ success: false, error: 'Upload failed' });
+    }
+});
+
+// DELETE image (admin only)
+router.delete('/:id', tokenAuth, async (req, res) => {
+    try {
+        const image = getPortfolioImageById(req.params.id);
+        if (!image) {
+            return res.status(404).json({ success: false, error: 'Image not found' });
+        }
+
+        // Delete from Cloudinary if configured
+        if (hasCloudinary && image.public_id) {
+            try {
+                await cloudinary.v2.uploader.destroy(image.public_id);
+            } catch (e) {
+                console.warn('Cloudinary delete warning:', e.message);
+            }
+        }
+
+        deletePortfolioImage(req.params.id);
+        res.json({ success: true, message: 'Image deleted' });
+    } catch (err) {
+        console.error('Delete error:', err);
+        res.status(500).json({ success: false, error: 'Delete failed' });
+    }
+});
+
+module.exports = router;

@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NJ Saree Drapist | Luxury Bridal Saree Draping & Styling</title>
+  <meta name="description" content="NJ Saree Drapist offers luxury bridal saree draping, lehenga draping, and pre-pleating services in New Jersey, New York, Pennsylvania, and Connecticut.">
+  <meta name="keywords" content="Bridal Saree Draping New Jersey, Indian Saree Drapist USA, Lehenga Draping Services, Bridal Saree Styling NJ">
+
+  <!-- OpenGraph -->
+  <meta property="og:title" content="NJ Saree Drapist | Luxury Bridal Saree Draping & Styling">
+  <meta property="og:description" content="Premium bridal saree draping and lehenga styling services across New Jersey, New York, Pennsylvania, and Connecticut.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://njsareedrapist.com">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="/page-styles.css">
+
+  <!-- JSON-LD Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BeautySalon",
+    "name": "NJ Saree Drapist",
+    "description": "Luxury bridal saree draping and lehenga styling services.",
+    "url": "https://njsareedrapist.com",
+    "email": "njsareedrapist@gmail.com",
+    "areaServed": [
+      {"@type": "State", "name": "New Jersey"},
+      {"@type": "State", "name": "New York"},
+      {"@type": "State", "name": "Pennsylvania"},
+      {"@type": "State", "name": "Connecticut"}
+    ],
+    "sameAs": ["https://instagram.com/njsareedrapist"],
+    "serviceType": ["Bridal Saree Draping", "Lehenga Draping", "Saree Pre-Pleating", "Event Styling"]
+  }
+  </script>
+</head>
+<body>
+
+  <!-- ═══════════════════ NAVIGATION ═══════════════════ -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-container">
+      <a href="/" class="nav-logo">
+        <span class="logo-text">NJ</span>
+        <span class="logo-sub">Saree Drapist</span>
+      </a>
+      <ul class="nav-menu" id="navMenu">
+        <li><a href="#home" class="nav-link active">Home</a></li>
+        <li><a href="#portfolio" class="nav-link">Portfolio</a></li>
+        <li><a href="#contact" class="nav-link">Contact</a></li>
+        <li><a href="#reviews" class="nav-link">Reviews</a></li>
+      </ul>
+      <button class="nav-hamburger" id="navHamburger" aria-label="Toggle menu">
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ═══════════════════ HERO SECTION ═══════════════════ -->
+  <section class="hero" id="home">
+    <div class="hero-bg">
+      <div class="hero-video-overlay"></div>
+      <div class="hero-animated-bg"></div>
+    </div>
+    <div class="hero-content">
+      <div class="hero-badge animate-fade-in">✦ Premium Bridal Styling ✦</div>
+      <h1 class="hero-title animate-fade-in">NJ Saree Drapist</h1>
+      <p class="hero-subtitle animate-slide-up">Luxury Bridal Saree Draping &amp; Styling</p>
+      <div class="hero-services animate-slide-up-delay">
+        <span>Bridal Saree Draping</span>
+        <span class="hero-dot">◈</span>
+        <span>Lehenga Draping</span>
+        <span class="hero-dot">◈</span>
+        <span>Pre-Pleating</span>
+      </div>
+    </div>
+    <div class="hero-scroll-indicator">
+      <div class="scroll-line"></div>
+    </div>
+  </section>
+
+  <!-- Silk Wave Divider -->
+  <div class="silk-wave-divider">
+    <svg viewBox="0 0 1440 120" preserveAspectRatio="none">
+      <path class="wave-1" d="M0,60 C360,120 720,0 1080,60 C1260,90 1380,60 1440,60 L1440,120 L0,120 Z"/>
+      <path class="wave-2" d="M0,80 C360,20 720,100 1080,40 C1260,20 1380,60 1440,80 L1440,120 L0,120 Z"/>
+    </svg>
+  </div>
+
+  <!-- ═══════════════════ PORTFOLIO SECTION ═══════════════════ -->
+  <section class="portfolio-section home-portfolio-section" id="portfolio">
+    <div class="container">
+      <div class="section-header animate-on-scroll">
+        <span class="section-tag">Our Work</span>
+        <h2 class="section-title">Bridal Portfolio</h2>
+        <p class="section-subtitle">A curated collection of our finest bridal draping artistry</p>
+      </div>
+
+      <div class="portfolio-filters animate-on-scroll">
+        <button class="filter-btn active" data-filter="all">All</button>
+        <button class="filter-btn" data-filter="bridal-saree">Bridal Saree</button>
+        <button class="filter-btn" data-filter="lehenga">Lehenga</button>
+        <button class="filter-btn" data-filter="pre-pleated">Pre-Pleated</button>
+        <button class="filter-btn" data-filter="event">Event</button>
+      </div>
+
+      <div class="portfolio-grid" id="portfolioGrid">
+        <!-- Images will be loaded dynamically here via app.js -->
+        <div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: var(--text-light);">Loading portfolio...</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Lightbox -->
+  <div class="lightbox" id="lightbox">
+    <button class="lightbox-close" id="lightboxClose" aria-label="Close lightbox">&times;</button>
+    <button class="lightbox-prev" id="lightboxPrev" aria-label="Previous image">&#8249;</button>
+    <button class="lightbox-next" id="lightboxNext" aria-label="Next image">&#8250;</button>
+    <div class="lightbox-content">
+      <img id="lightboxImg" src="" alt="Portfolio image">
+      <div class="lightbox-caption" id="lightboxCaption"></div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════ CONTACT SECTION ═══════════════════ -->
+  <section class="contact-section home-contact-section" id="contact">
+    <div class="container">
+      <div class="section-header animate-on-scroll">
+        <span class="section-tag">Get in Touch</span>
+        <h2 class="section-title">Contact Us</h2>
+        <p class="section-subtitle">Let's create something beautiful together</p>
+      </div>
+
+      <div class="contact-grid">
+        <div class="contact-card glass-card animate-on-scroll">
+          <div class="contact-icon">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#C9A227" stroke-width="1.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          </div>
+          <h3>Email</h3>
+          <a href="mailto:njsareedrapist@gmail.com" class="contact-link">njsareedrapist@gmail.com</a>
+        </div>
+
+        <div class="contact-card glass-card animate-on-scroll">
+          <div class="contact-icon">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#C9A227" stroke-width="1.5"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+          </div>
+          <h3>Instagram</h3>
+          <a href="https://instagram.com/njsareedrapist" target="_blank" rel="noopener noreferrer" class="contact-link">@njsareedrapist</a>
+        </div>
+
+        <div class="contact-card glass-card animate-on-scroll">
+          <div class="contact-icon">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#C9A227" stroke-width="1.5"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+          </div>
+          <h3>WhatsApp</h3>
+          <a href="https://wa.me/?text=Hi%20NJ%20Saree%20Drapist!" target="_blank" rel="noopener noreferrer" class="contact-link">Message Us on WhatsApp</a>
+        </div>
+
+        <div class="contact-card glass-card animate-on-scroll">
+          <div class="contact-icon">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#C9A227" stroke-width="1.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          </div>
+          <h3>Service Areas</h3>
+          <p class="contact-areas">New Jersey · New York · Pennsylvania · Connecticut</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════ REVIEWS SECTION ═══════════════════ -->
+  <section class="reviews-section home-reviews-section" id="reviews">
+    <div class="container">
+      <div class="section-header animate-on-scroll">
+        <span class="section-tag">Testimonials</span>
+        <h2 class="section-title">Client Reviews</h2>
+        <p class="section-subtitle">Stories from our beautiful brides & happy clients</p>
+      </div>
+
+      <!-- Google Review Banner -->
+      <div class="google-review-banner animate-on-scroll">
+        <div class="google-review-banner-content">
+          <div class="google-brand">
+            <svg width="36" height="36" viewBox="0 0 48 48" fill="none">
+              <path fill="#4285F4" d="M43.6 20.5H24v7h11.3C33.9 33 29.4 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.1 7.9 3l5.2-5.2C33.7 7.1 29.1 5 24 5 13 5 4 14 4 25s9 20 20 20c11 0 19.3-7.7 19.3-19.5 0-1.3-.2-2.7-.7-5z"/>
+              <path fill="#34A853" d="M6.3 14.7l6.5 4.8C14.5 15 18.9 12 24 12c3.1 0 5.8 1.1 7.9 3l5.2-5.2C33.7 7.1 29.1 5 24 5 16.2 5 9.5 9.1 6.3 14.7z"/>
+              <path fill="#FBBC05" d="M24 45c5.1 0 9.7-1.9 13.2-5L30.8 35C29 36.3 26.6 37 24 37c-5.4 0-9.9-3-11.3-7.5L6.3 34.4C9.5 40.5 16.3 45 24 45z"/>
+              <path fill="#EA4335" d="M43.6 20.5H24v7h11.3c-.6 2-1.9 3.7-3.5 5L38.2 40c3.7-3.4 5.8-8.4 5.8-14.5 0-1.3-.2-2.7-.4-5z"/>
+            </svg>
+            <span>Google Reviews</span>
+          </div>
+          <p>We'd love to hear about your experience! Help us grow by leaving a review on Google.</p>
+          <a href="https://www.google.com/maps/place/NJ+Saree+Drapist/@44.0563011,-131.4644231,3z/data=!4m8!3m7!1s0x8a2ffb39db7d751b:0x69d636d56a5e5ff!8m2!3d46.423669!4d-129.9427086!9m1!1b1!16s%2Fg%2F11wqxbw0yx!18m1!1e1?entry=ttu&g_ep=EgoyMDI2MDMxNy4wIKXMDSoASAFQAw%3D%3D" target="_blank" rel="noopener noreferrer" class="btn-gold" id="googleReviewBtn">
+            ⭐ Write a Google Review
+          </a>
+        </div>
+      </div>
+
+      <!-- Site Reviews Grid -->
+      <div class="section-header animate-on-scroll" style="margin-top:60px;">
+        <span class="section-tag">Website Reviews</span>
+        <h2 class="section-title" style="font-size: clamp(1.4rem, 2.5vw, 1.8rem);">What Our Clients Say</h2>
+      </div>
+
+      <div class="reviews-grid" id="reviewsGrid">
+        <!-- Populated by JS -->
+      </div>
+
+      <!-- Divider -->
+      <div class="reviews-divider animate-on-scroll">
+        <span>Share Your Story</span>
+      </div>
+
+      <!-- Submit Review Form -->
+      <div class="review-form-container glass-card animate-on-scroll">
+        <h3 class="form-title">Share Your Experience</h3>
+        <p class="form-subtitle">Your review will be published after admin approval.</p>
+        <form id="reviewForm" class="review-form">
+          <div class="form-group">
+            <label for="reviewName">Your Name</label>
+            <input type="text" id="reviewName" name="name" placeholder="Enter your name" required maxlength="100">
+          </div>
+          <div class="form-group">
+            <label>Your Rating</label>
+            <div class="star-rating" id="starRating">
+              <span class="star" data-rating="1">★</span>
+              <span class="star" data-rating="2">★</span>
+              <span class="star" data-rating="3">★</span>
+              <span class="star" data-rating="4">★</span>
+              <span class="star" data-rating="5">★</span>
+            </div>
+            <input type="hidden" id="reviewRating" name="rating" value="0">
+          </div>
+          <div class="form-group">
+            <label for="reviewMessage">Your Review</label>
+            <textarea id="reviewMessage" name="message" placeholder="Tell us about your experience..." required maxlength="1000" rows="4"></textarea>
+          </div>
+          <button type="submit" class="btn-submit" id="reviewSubmitBtn">
+            <span>Submit Review</span>
+          </button>
+          <div class="form-message" id="formMessage"></div>
+        </form>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ═══════════════════ FOOTER ═══════════════════ -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-brand">
+          <span class="footer-logo">NJ Saree Drapist</span>
+          <p class="footer-tagline">Luxury Bridal Saree Draping &amp; Styling</p>
+        </div>
+        <div class="footer-links">
+          <a href="#home">Home</a>
+          <a href="#portfolio">Portfolio</a>
+          <a href="#contact">Contact</a>
+          <a href="#reviews">Reviews</a>
+        </div>
+        <div class="footer-social">
+          <a href="https://instagram.com/njsareedrapist" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+          </a>
+          <a href="mailto:njsareedrapist@gmail.com" aria-label="Email">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+          </a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 NJ Saree Drapist. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="/app.js"></script>
+</body>
+</html>
