@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const cloudinary = require('cloudinary');
 const multer = require('multer');
-const { insertBridalImage, getAllBridalImages, deleteBridalImage, getBridalImageById } = require('../db/database');
+// Removed db/database.js require for bridging image context
 
 // Config from env
 const hasCloudinary = process.env.CLOUDINARY_CLOUD_NAME && process.env.CLOUDINARY_API_KEY && process.env.CLOUDINARY_API_SECRET;
@@ -51,13 +51,42 @@ function tokenAuth(req, res, next) {
     }
 }
 
-// GET all bridal images (public - no auth needed)
-router.get('/', (req, res) => {
+// GET bridal images (public)
+router.get('/', async (req, res) => {
     try {
-        const images = getAllBridalImages();
+        if (!hasCloudinary) {
+            return res.json({ success: true, images: [] });
+        }
+
+        // Fetch specifically bridal-saree tagged resources or raw folder assets
+        const result = await cloudinary.v2.api.resources({
+            type: 'upload',
+            prefix: 'nj-bridal-portfolio/',
+            context: true,
+            max_results: 100,
+            sort_by: 'created_at',
+            direction: 'desc'
+        });
+
+        // Filter for this legacy route (if clients expect only bridal images)
+        let images = result.resources.filter(img => {
+            const context = img.context && img.context.custom ? img.context.custom : {};
+            return !context.category || context.category === 'bridal-saree';
+        }).map(img => {
+            const context = img.context && img.context.custom ? img.context.custom : {};
+            return {
+                id: encodeURIComponent(img.public_id),
+                url: img.secure_url,
+                public_id: img.public_id,
+                caption: context.caption || '',
+                created_at: img.created_at
+            };
+        });
+
         res.json({ success: true, images });
     } catch (err) {
-        res.status(500).json({ success: false, error: 'Failed to fetch images' });
+        console.error('Cloudinary fetch error:', err);
+        res.status(500).json({ success: false, error: 'Failed to fetch images from Cloudinary' });
     }
 });
 
@@ -78,7 +107,17 @@ router.post('/upload', tokenAuth, upload.single('image'), async (req, res) => {
         }
 
         const caption = req.body.caption || '';
-        insertBridalImage(imageUrl, publicId, caption);
+        
+        // Add metadata to Cloudinary context so we can retrieve it natively
+        if (hasCloudinary && publicId) {
+            try {
+                await cloudinary.v2.uploader.add_context(`caption=${caption}|category=bridal-saree`, [publicId]);
+            } catch (ctxErr) {
+                console.warn('Failed to add context to Cloudinary:', ctxErr.message);
+            }
+        }
+
+        // Removed SQLite insertBridalImage
         res.json({ success: true, message: 'Image uploaded', url: imageUrl });
     } catch (err) {
         console.error('Upload error:', err);
@@ -86,25 +125,25 @@ router.post('/upload', tokenAuth, upload.single('image'), async (req, res) => {
     }
 });
 
-// DELETE image (admin only)
+// DELETE bridal image (admin only)
 router.delete('/:id', tokenAuth, async (req, res) => {
     try {
-        const image = getBridalImageById(req.params.id);
-        if (!image) {
+        const publicId = req.params.id;
+        
+        if (!publicId) {
             return res.status(404).json({ success: false, error: 'Image not found' });
         }
 
-        // Delete from Cloudinary if configured
-        if (hasCloudinary && image.public_id) {
+        if (hasCloudinary) {
             try {
-                await cloudinary.v2.uploader.destroy(image.public_id);
+                await cloudinary.v2.uploader.destroy(publicId);
             } catch (e) {
                 console.warn('Cloudinary delete warning:', e.message);
             }
         }
 
-        deleteBridalImage(req.params.id);
-        res.json({ success: true, message: 'Image deleted' });
+        // Removed SQLite deleteBridalImage
+        res.json({ success: true, message: 'Image deleted from Cloudinary' });
     } catch (err) {
         console.error('Delete error:', err);
         res.status(500).json({ success: false, error: 'Delete failed' });

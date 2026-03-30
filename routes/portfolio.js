@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const cloudinary = require('cloudinary');
 const multer = require('multer');
-const { insertPortfolioImage, getAllPortfolioImages, deletePortfolioImage, getPortfolioImageById } = require('../db/database');
+// No longer import SQLite for portfolio images since we use Cloudinary natively
 
 // Config from env
 const cName = process.env.CLOUDINARY_CLOUD_NAME;
@@ -60,13 +60,44 @@ function tokenAuth(req, res, next) {
 
 // GET portfolio images (public - no auth needed)
 // Option ?category=bridal-saree
-router.get('/', (req, res) => {
+router.get('/', async (req, res) => {
     try {
-        const category = req.query.category;
-        const images = getAllPortfolioImages(category);
+        if (!hasCloudinary) {
+            return res.json({ success: true, images: [] }); // Fallback empty if no Cloudinary
+        }
+
+        const categoryFilter = req.query.category;
+
+        // Fetch all images in the portfolio folder directly from Cloudinary
+        const result = await cloudinary.v2.api.resources({
+            type: 'upload',
+            prefix: 'nj-bridal-portfolio/',
+            context: true,
+            max_results: 100,
+            sort_by: 'created_at',
+            direction: 'desc'
+        });
+
+        let images = result.resources.map(img => {
+            const context = img.context && img.context.custom ? img.context.custom : {};
+            return {
+                id: encodeURIComponent(img.public_id), // URL encode to handle slashes in folder names
+                url: img.secure_url,
+                public_id: img.public_id,
+                caption: context.caption || '',
+                category: context.category || 'bridal-saree',
+                created_at: img.created_at
+            };
+        });
+
+        if (categoryFilter) {
+            images = images.filter(img => img.category === categoryFilter);
+        }
+
         res.json({ success: true, images });
     } catch (err) {
-        res.status(500).json({ success: false, error: 'Failed to fetch images' });
+        console.error('Cloudinary fetch error:', err);
+        res.status(500).json({ success: false, error: 'Failed to fetch images from Cloudinary' });
     }
 });
 
@@ -88,8 +119,17 @@ router.post('/upload', tokenAuth, upload.single('image'), async (req, res) => {
 
         const caption = req.body.caption || '';
         const category = req.body.category || 'bridal-saree';
+
+        // Add metadata to Cloudinary context so we can retrieve it without SQLite
+        if (hasCloudinary && publicId) {
+            try {
+                await cloudinary.v2.uploader.add_context(`caption=${caption}|category=${category}`, [publicId]);
+            } catch (ctxErr) {
+                console.warn('Failed to add context to Cloudinary:', ctxErr.message);
+            }
+        }
         
-        insertPortfolioImage(imageUrl, publicId, caption, category);
+        // Removed SQLite insertPortfolioImage
         res.json({ success: true, message: 'Image uploaded', url: imageUrl });
     } catch (err) {
         console.error('Upload error:', err);
@@ -100,22 +140,24 @@ router.post('/upload', tokenAuth, upload.single('image'), async (req, res) => {
 // DELETE image (admin only)
 router.delete('/:id', tokenAuth, async (req, res) => {
     try {
-        const image = getPortfolioImageById(req.params.id);
-        if (!image) {
+        // The ID passed IS the Cloudinary public_id
+        const publicId = req.params.id;
+        
+        if (!publicId) {
             return res.status(404).json({ success: false, error: 'Image not found' });
         }
 
-        // Delete from Cloudinary if configured
-        if (hasCloudinary && image.public_id) {
+        // Delete purely from Cloudinary
+        if (hasCloudinary) {
             try {
-                await cloudinary.v2.uploader.destroy(image.public_id);
+                await cloudinary.v2.uploader.destroy(publicId);
             } catch (e) {
                 console.warn('Cloudinary delete warning:', e.message);
             }
         }
 
-        deletePortfolioImage(req.params.id);
-        res.json({ success: true, message: 'Image deleted' });
+        // Removed SQLite deletePortfolioImage
+        res.json({ success: true, message: 'Image deleted from Cloudinary' });
     } catch (err) {
         console.error('Delete error:', err);
         res.status(500).json({ success: false, error: 'Delete failed' });
