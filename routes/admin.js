@@ -3,13 +3,8 @@ const crypto = require('crypto');
 const router = express.Router();
 const { getPendingReviews, getAllReviews, approveReview, deleteReview } = require('../db/database');
 
-// In-memory token store (tokens are invalidated on server restart)
-const activeTokens = new Set();
-
-// Generate a secure random token
-function generateToken() {
-    return crypto.randomBytes(32).toString('hex');
-}
+// Stateless token derived from environment variables to survive Vercel cold starts
+const STATELESS_TOKEN = crypto.createHash('sha256').update((process.env.ADMIN_USERNAME || 'admin') + (process.env.ADMIN_PASSWORD || 'secret')).digest('hex');
 
 // Token-based auth middleware (no WWW-Authenticate header — no browser popup)
 function tokenAuth(req, res, next) {
@@ -21,7 +16,7 @@ function tokenAuth(req, res, next) {
 
     const token = authHeader.split(' ')[1];
 
-    if (activeTokens.has(token)) {
+    if (token === STATELESS_TOKEN) {
         next();
     } else {
         return res.status(401).json({ success: false, error: 'Invalid or expired token' });
@@ -33,18 +28,14 @@ router.post('/login', (req, res) => {
     const { username, password } = req.body;
 
     if (username === process.env.ADMIN_USERNAME && password === process.env.ADMIN_PASSWORD) {
-        const token = generateToken();
-        activeTokens.add(token);
-        return res.json({ success: true, token });
+        return res.json({ success: true, token: STATELESS_TOKEN });
     } else {
         return res.status(401).json({ success: false, error: 'Invalid credentials' });
     }
 });
 
-// POST logout — invalidate token
+// POST logout — client drops token
 router.post('/logout', tokenAuth, (req, res) => {
-    const token = req.headers.authorization.split(' ')[1];
-    activeTokens.delete(token);
     res.json({ success: true, message: 'Logged out' });
 });
 
@@ -103,9 +94,8 @@ router.delete('/reviews/:id', (req, res) => {
     }
 });
 
-// Expose token validator for use by other routes
 function isValidToken(token) {
-    return activeTokens.has(token);
+    return token === STATELESS_TOKEN;
 }
 
 module.exports = router;
